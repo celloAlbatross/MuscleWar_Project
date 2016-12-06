@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import gnu.io.CommPort;
@@ -9,12 +8,18 @@ import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 
 public class Serial {
-	public static void main(String[] args) throws Exception
-    {
+	private String dev;
+	private double value;
 
-        String dev = "/dev/ttyUSB0";
+	public Serial(String dev) throws Exception {
+
+        this.dev = dev;
 
         System.out.println("Monitoring serial stream on " + dev);
+
+    }
+
+	public void connect() throws Exception {
         CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(dev);
         if (portIdentifier.isCurrentlyOwned())
         {
@@ -33,18 +38,18 @@ public class Serial {
                         SerialPort.STOPBITS_1,
                         SerialPort.PARITY_NONE );
 
-                //InputStream in = serialPort.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
-                while (true)
-                {
-//                    int data = in.read();
-//                    if (data < 0) break;
-//                    System.out.print((char)data);
-                	String line = reader.readLine();
-                	double value = Double.parseDouble(line.split(" ")[1]);
-                	System.out.println(value);
-                }
+
+                String line = reader.readLine();
+                value = Double.parseDouble(line.split(" ")[1]);
+                System.out.println(value);
             }
+            
+            commPort.close();
         }
     }
+
+	public double getValue() {
+		return value;
+	}
 }

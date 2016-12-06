@@ -13,15 +13,19 @@ import java.awt.RenderingHints;
 public class GameScreen extends ScreenAdapter {
     
     MuscleWorld world;
+    PowerBar powerBar;
+    
     SpriteBatch batch;
     Texture backG = new Texture("gym.jpg");
     
     int timer = 1;
+    int power = -299;
 //    float time;
 
     public GameScreen(MuscleWarGame muscleWarGame) {
         world = new MuscleWorld();
         batch = new SpriteBatch();
+        powerBar = new PowerBar(batch);
     }
     
     private void testAL(){
@@ -40,7 +44,11 @@ public class GameScreen extends ScreenAdapter {
         if (timer % 50 == 0) {
             world.playerI.deCreasePowerPerSec();
             world.playerII.deCreasePowerPerSec();
+//            power += 10;
             System.out.println(world.playerI.powerBar);
+        }
+        if (timer % 2 == 0) {
+            power++;
         }
         timer++;
         timerReset();
@@ -67,6 +75,9 @@ public class GameScreen extends ScreenAdapter {
         if(timer >= 10000){
             timer = 0;
         }
+        if (power >= 0) {
+            power = -299;
+        }
     }
     
     @Override
@@ -76,6 +87,8 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         batch.draw(backG, 0, 0);
+        powerBar.Draw(power);
+        
         batch.end();
         if (!releasePower()) {  
             testAL();
@@ -83,5 +96,7 @@ public class GameScreen extends ScreenAdapter {
             whoWin();       
         }
     }
+    
+    
 
 }

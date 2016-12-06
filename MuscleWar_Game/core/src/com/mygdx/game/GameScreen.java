@@ -14,6 +14,7 @@ public class GameScreen extends ScreenAdapter {
     
     MuscleWorld world;
     PowerBar powerBar;
+    Serial serial;
     
     SpriteBatch batch;
     Texture backG = new Texture("gym.jpg");
@@ -22,9 +23,11 @@ public class GameScreen extends ScreenAdapter {
     int power = -299;
 //    float time;
 
-    public GameScreen(MuscleWarGame muscleWarGame) {
+    public GameScreen(MuscleWarGame muscleWarGame) throws Exception {
         world = new MuscleWorld();
         batch = new SpriteBatch();
+        serial = new Serial("/dev/ttyUSB0");
+        
         powerBar = new PowerBar(batch);
     }
     
@@ -87,6 +90,13 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         batch.draw(backG, 0, 0);
+        try {
+			serial.connect();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        System.out.println(serial.getValue());
         powerBar.Draw(power);
         
         batch.end();

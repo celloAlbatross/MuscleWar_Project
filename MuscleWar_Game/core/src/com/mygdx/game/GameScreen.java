@@ -7,18 +7,21 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import java.awt.RenderingHints;
 
 public class GameScreen extends ScreenAdapter {
     
     MuscleWorld world;
-
+    SpriteBatch batch;
+    Texture backG = new Texture("gym.jpg");
+    
     int timer = 1;
 //    float time;
 
     public GameScreen(MuscleWarGame muscleWarGame) {
         world = new MuscleWorld();
-        
+        batch = new SpriteBatch();
     }
     
     private void testAL(){
@@ -71,6 +74,9 @@ public class GameScreen extends ScreenAdapter {
         
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        batch.draw(backG, 0, 0);
+        batch.end();
         if (!releasePower()) {  
             testAL();
             decreasePowerPerSec();

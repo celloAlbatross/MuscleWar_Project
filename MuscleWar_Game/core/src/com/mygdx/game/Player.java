@@ -4,7 +4,8 @@ package com.mygdx.game;
 
 public class Player {
     
-    private final int MAX_POWER = 20;
+    private final int MAX_POWER = 40;
+    private final int INCREASE_POWERBAR = 1;
     
     boolean isRaise;
     boolean releasePower;
@@ -15,17 +16,24 @@ public class Player {
     }
     
     
-    
-    
-    
-    
     public void increasePowerBar(){
         if (powerBar < MAX_POWER) {
             if (isRaise) {
-                powerBar++;
+                powerBar += INCREASE_POWERBAR;
+                isReleasePower();
             }
-        } else {
+        }
+    }
+    
+    public void isReleasePower(){
+        if (powerBar >= MAX_POWER){
             releasePower = true;
+        }
+    }
+    
+    public void deCreasePowerPerSec(){
+        if (powerBar > 0) {
+            powerBar -= 1;
         }
     }
 }

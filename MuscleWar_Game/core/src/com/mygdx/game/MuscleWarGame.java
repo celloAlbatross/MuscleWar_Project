@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class MuscleWarGame extends Game {
 	SpriteBatch batch;
-	Texture img;
+	
 	
 	@Override
 	public void create () {
@@ -21,11 +21,13 @@ public class MuscleWarGame extends Game {
 	@Override
 	public void render () {
             super.render();
+//            batch.begin();
+//            batch.draw(backGround, 0, 0);
+//            batch.end();
 	}
 	
 	@Override
 	public void dispose () {
 		batch.dispose();
-		img.dispose();
 	}
 }

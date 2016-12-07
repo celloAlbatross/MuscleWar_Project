@@ -6,17 +6,18 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
 public class PowerBar {
-    Texture redBar = new Texture("red.png");
+    Texture bar;
     SpriteBatch batch;
 
-    public PowerBar(SpriteBatch batch) {
+    public PowerBar(SpriteBatch batch,Texture bar) {
         this.batch = batch;
+        this.bar = bar;
     }
     
     
     public void Draw(double x){
 
-        batch.draw(redBar, (float) x, 20);
+        batch.draw(bar, (float) x, 20);
 //        batch.draw(redBar, 20, 20);
 
     }

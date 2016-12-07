@@ -21,19 +21,24 @@ public class GameScreen extends ScreenAdapter {
     
     MuscleWorld world;
     PowerBar powerBarI;
+    PowerBar powerBarII;
     
     
     SpriteBatch batch;
     Texture backG = new Texture("gym.jpg");
+    Texture barI = new Texture("red.png");
+    Texture barII = new Texture("blue.jpg");
     
     int timer = 1;
     float powerI = -BAR_LENGHT;
+    float powerII = BAR_LENGHT*2;
 
 
     public GameScreen(MuscleWarGame muscleWarGame) {
         world = new MuscleWorld();
         batch = new SpriteBatch();
-        powerBarI = new PowerBar(batch);
+        powerBarI = new PowerBar(batch,barI);
+        powerBarII = new PowerBar(batch, barII);
         maxPower = world.playerI.getMaxPower();
         ratio = BAR_LENGHT/maxPower;
     }
@@ -42,13 +47,12 @@ public class GameScreen extends ScreenAdapter {
         if (Gdx.input.isKeyJustPressed(Keys.A)) {
             world.playerI.increasePowerBar();
             powerI += ratio;
-            System.out.println(world.playerI.getMaxPower());
-            System.out.println("Power: I" + powerI);
+            
             System.out.println("Player I: " + world.playerI.powerBar);
         }
         if (Gdx.input.isKeyJustPressed(Keys.L)) {
             world.playerII.increasePowerBar();
-            
+            powerII -= ratio;
             System.out.println("Player II: " + world.playerII.powerBar);
         }
         
@@ -58,8 +62,11 @@ public class GameScreen extends ScreenAdapter {
         if (timer % 50 == 0) {
             world.playerI.deCreasePowerPerSec();
             world.playerII.deCreasePowerPerSec();
-            if(powerI > -BAR_LENGHT)
+            if (powerI > -BAR_LENGHT)
                 powerI -= ratio;
+            if (powerII < BAR_LENGHT*2)
+                powerII += ratio;
+                
 
         }
 
@@ -102,10 +109,12 @@ public class GameScreen extends ScreenAdapter {
         if (!releasePower()) {  
             testAL();
             powerBarI.Draw(powerI);
+            powerBarII.Draw(powerII);
             decreasePowerPerSec();
             whoWin();       
         } else {
             powerBarI.Draw(powerI);
+            powerBarII.Draw(powerII);
         }
         batch.end();
     }

@@ -23,7 +23,7 @@ public class Player {
 
     public Player(SpriteBatch batch,float x) {
         
-    	isRaise = true;
+    	isRaise = false;
     	setPosition = x;
     	this.batch = batch;
     	
@@ -31,14 +31,8 @@ public class Player {
     	previousState = DOWN_STATE;
     }
     
-    
-    public void increasePowerBar(){
-        if (powerBar < MAX_POWER) {
-            if (isRaise) {
-                powerBar += INCREASE_POWERBAR;
-                isReleasePower();
-            }
-        }
+    public boolean getIsRaise(){
+    	return isRaise;
     }
     
     public void isReleasePower(){
@@ -63,7 +57,10 @@ public class Player {
     		
     		if (previousState != currentState) {
     			powerBar += INCREASE_POWERBAR;
+    			isRaise = true;
     			previousState = DOWN_STATE;
+    		} else {
+    			isRaise = false;
     		}
     	}
     	isReleasePower();

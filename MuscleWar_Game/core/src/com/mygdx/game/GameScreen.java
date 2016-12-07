@@ -56,6 +56,14 @@ public class GameScreen extends ScreenAdapter {
         world.playerI.setPower(serial.getValue());
         world.playerII.setPower(serial.getValue2());
         
+        if (world.playerI.getIsRaise()) {
+        	powerI += ratio;
+        }
+        
+        if (world.playerII.getIsRaise()){
+        	powerII -= ratio;
+        }
+        
         System.out.println(world.playerI.getPower());
         System.out.println(world.playerII.getPower());
     }

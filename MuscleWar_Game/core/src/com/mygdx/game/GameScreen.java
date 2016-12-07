@@ -12,8 +12,8 @@ import java.awt.RenderingHints;
 
 public class GameScreen extends ScreenAdapter {
     
-    public static final int WIDTH = 720;
-    public static final int HEIGHT = 600;
+    public static final int WIDTH = 1280;
+    public static final int HEIGHT = 720;
     public static final int BAR_LENGHT = WIDTH/2;
     
     float maxPower;
@@ -25,19 +25,21 @@ public class GameScreen extends ScreenAdapter {
     Serial serial;
     
     
+    
     SpriteBatch batch;
     Texture backG = new Texture("gym.jpg");
     Texture barI = new Texture("red.png");
     Texture barII = new Texture("blue.jpg");
     
-    int timer = 1;
+    float timer = 0;
     float powerI = -BAR_LENGHT;
     float powerII = BAR_LENGHT*2;
 
 
     public GameScreen(MuscleWarGame muscleWarGame) throws Exception {
-        world = new MuscleWorld();
+        
         batch = new SpriteBatch();
+        world = new MuscleWorld(batch);
         serial = new Serial("/dev/ttyUSB0");
         powerBarI = new PowerBar(batch,barI);
         powerBarII = new PowerBar(batch, barII);
@@ -50,23 +52,16 @@ public class GameScreen extends ScreenAdapter {
         ratio = BAR_LENGHT/maxPower;
     }
     
-    private void testAL(){
-        if (Gdx.input.isKeyJustPressed(Keys.A)) {
-            world.playerI.increasePowerBar();
-            powerI += ratio;
-            
-            System.out.println("Player I: " + world.playerI.powerBar);
-        }
-        if (Gdx.input.isKeyJustPressed(Keys.L)) {
-            world.playerII.increasePowerBar();
-            powerII -= ratio;
-            System.out.println("Player II: " + world.playerII.powerBar);
-        }
+    private void powerUp(){
+        world.playerI.setPower(serial.getValue());
+        world.playerII.setPower(serial.getValue2());
         
+        System.out.println(world.playerI.getPower());
+        System.out.println(world.playerII.getPower());
     }
     
     public void decreasePowerPerSec(){
-        if (timer % 50 == 0) {
+        if (timer >= 2) {
             world.playerI.deCreasePowerPerSec();
             world.playerII.deCreasePowerPerSec();
             if (powerI > -BAR_LENGHT)
@@ -77,7 +72,7 @@ public class GameScreen extends ScreenAdapter {
 
         }
 
-        timer++;
+        timer += Gdx.graphics.getDeltaTime();
         timerReset();
     }
     
@@ -111,14 +106,17 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        System.out.println(serial.getValue());
-        System.out.println(serial.getValue2());
-        System.out.println("-----------");
+        //System.out.println(serial.getValue());
+        //System.out.println(serial.getValue2());
+        
         
         batch.begin();
         batch.draw(backG, 0, 0);
         if (!releasePower()) {  
-            testAL();
+        	System.out.println("-----------");
+            System.out.println(serial.getValue() + " | " + serial.getValue2());
+            powerUp();
+            
             powerBarI.Draw(powerI);
             powerBarII.Draw(powerII);
             decreasePowerPerSec();

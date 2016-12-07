@@ -1,6 +1,7 @@
 
 package com.mygdx.game;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Player {
     
@@ -8,13 +9,26 @@ public class Player {
     private final int INCREASE_POWERBAR = 1;
     
     private float ratio;
+    private int currentState;
+    private int previousState;
     
     boolean isRaise;
     boolean releasePower;
     int powerBar = 0;
+    float setPosition;
+    SpriteBatch batch;
+    
+    public static int DOWN_STATE = 1;
+    public static int UP_STATE = 2;
 
-    public Player() {
-        isRaise = true;
+    public Player(SpriteBatch batch,float x) {
+        
+    	isRaise = true;
+    	setPosition = x;
+    	this.batch = batch;
+    	
+    	currentState = DOWN_STATE;
+    	previousState = DOWN_STATE;
     }
     
     
@@ -39,9 +53,35 @@ public class Player {
         }
     }
     
+    public void setPower(double power) {
+    	
+    	if (power > 1) {
+    		currentState = UP_STATE;
+    		previousState = DOWN_STATE;
+    	} else {
+    		currentState = DOWN_STATE;
+    		
+    		if (previousState != currentState) {
+    			powerBar += INCREASE_POWERBAR;
+    			previousState = DOWN_STATE;
+    		}
+    	}
+    	
+    	isReleasePower();
+    }
+    
     public float getMaxPower() {
         
         return MAX_POWER;
     }
+    
+    public double getPower() {
+    	return powerBar;
+    }
+    
+    public void draw() {
+    	
+    }
+    
     
 }

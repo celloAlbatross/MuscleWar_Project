@@ -4,8 +4,10 @@ package com.mygdx.game;
 
 public class Player {
     
-    private final int MAX_POWER = 40;
+    private final float MAX_POWER = 20;
     private final int INCREASE_POWERBAR = 1;
+    
+    private float ratio;
     
     boolean isRaise;
     boolean releasePower;
@@ -36,4 +38,10 @@ public class Player {
             powerBar -= 1;
         }
     }
+    
+    public float getMaxPower() {
+        
+        return MAX_POWER;
+    }
+    
 }

@@ -14,9 +14,9 @@ public class PowerBar {
     }
     
     
-    public void Draw(int x){
+    public void Draw(double x){
 
-        batch.draw(redBar, x, 20);
+        batch.draw(redBar, (float) x, 20);
 //        batch.draw(redBar, 20, 20);
 
     }

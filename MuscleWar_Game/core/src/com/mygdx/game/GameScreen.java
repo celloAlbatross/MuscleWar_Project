@@ -12,29 +12,43 @@ import java.awt.RenderingHints;
 
 public class GameScreen extends ScreenAdapter {
     
+    public static final int WIDTH = 720;
+    public static final int HEIGHT = 600;
+    public static final int BAR_LENGHT = WIDTH/2;
+    
+    float maxPower;
+    float ratio;
+    
     MuscleWorld world;
-    PowerBar powerBar;
+    PowerBar powerBarI;
+    
     
     SpriteBatch batch;
     Texture backG = new Texture("gym.jpg");
     
     int timer = 1;
-    int power = -299;
-//    float time;
+    float powerI = -BAR_LENGHT;
+
 
     public GameScreen(MuscleWarGame muscleWarGame) {
         world = new MuscleWorld();
         batch = new SpriteBatch();
-        powerBar = new PowerBar(batch);
+        powerBarI = new PowerBar(batch);
+        maxPower = world.playerI.getMaxPower();
+        ratio = BAR_LENGHT/maxPower;
     }
     
     private void testAL(){
         if (Gdx.input.isKeyJustPressed(Keys.A)) {
             world.playerI.increasePowerBar();
+            powerI += ratio;
+            System.out.println(world.playerI.getMaxPower());
+            System.out.println("Power: I" + powerI);
             System.out.println("Player I: " + world.playerI.powerBar);
         }
         if (Gdx.input.isKeyJustPressed(Keys.L)) {
             world.playerII.increasePowerBar();
+            
             System.out.println("Player II: " + world.playerII.powerBar);
         }
         
@@ -44,12 +58,11 @@ public class GameScreen extends ScreenAdapter {
         if (timer % 50 == 0) {
             world.playerI.deCreasePowerPerSec();
             world.playerII.deCreasePowerPerSec();
-//            power += 10;
-            System.out.println(world.playerI.powerBar);
+            if(powerI > -BAR_LENGHT)
+                powerI -= ratio;
+
         }
-        if (timer % 2 == 0) {
-            power++;
-        }
+
         timer++;
         timerReset();
     }
@@ -75,9 +88,7 @@ public class GameScreen extends ScreenAdapter {
         if(timer >= 10000){
             timer = 0;
         }
-        if (power >= 0) {
-            power = -299;
-        }
+
     }
     
     @Override
@@ -85,16 +96,18 @@ public class GameScreen extends ScreenAdapter {
         
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         batch.begin();
         batch.draw(backG, 0, 0);
-        powerBar.Draw(power);
-        
-        batch.end();
         if (!releasePower()) {  
             testAL();
+            powerBarI.Draw(powerI);
             decreasePowerPerSec();
             whoWin();       
+        } else {
+            powerBarI.Draw(powerI);
         }
+        batch.end();
     }
     
     

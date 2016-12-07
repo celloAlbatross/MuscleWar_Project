@@ -21,9 +21,7 @@ public class MuscleWarGame extends Game {
 	@Override
 	public void render () {
             super.render();
-//            batch.begin();
-//            batch.draw(backGround, 0, 0);
-//            batch.end();
+
 	}
 	
 	@Override

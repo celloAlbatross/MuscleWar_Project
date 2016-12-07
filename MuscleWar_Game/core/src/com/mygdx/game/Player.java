@@ -57,7 +57,7 @@ public class Player {
     	
     	if (power > 1) {
     		currentState = UP_STATE;
-    		previousState = DOWN_STATE;
+    		previousState = UP_STATE;
     	} else {
     		currentState = DOWN_STATE;
     		
@@ -66,7 +66,6 @@ public class Player {
     			previousState = DOWN_STATE;
     		}
     	}
-    	
     	isReleasePower();
     }
     

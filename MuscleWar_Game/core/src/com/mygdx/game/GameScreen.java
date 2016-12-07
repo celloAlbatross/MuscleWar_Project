@@ -68,7 +68,7 @@ public class GameScreen extends ScreenAdapter {
                 powerI -= ratio;
             if (powerII < BAR_LENGHT*2)
                 powerII += ratio;
-                
+            timer = 0;
 
         }
 

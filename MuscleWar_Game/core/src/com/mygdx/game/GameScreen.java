@@ -16,6 +16,8 @@ public class GameScreen extends ScreenAdapter {
     public static final int HEIGHT = 720;
     public static final int BAR_LENGHT = WIDTH/2;
     
+    private final int UPSIZE = 7;
+    
     float maxPower;
     float ratio;
     
@@ -30,7 +32,9 @@ public class GameScreen extends ScreenAdapter {
     Texture backG = new Texture("gym.jpg");
     Texture barI = new Texture("red.png");
     Texture barII = new Texture("blue.jpg");
-    
+    Texture playerI = new Texture("player1win.png");
+    Texture playerII = new Texture("player2win.png");
+ 
     float timer = 0;
     float powerI = -BAR_LENGHT;
     float powerII = BAR_LENGHT*2;
@@ -40,7 +44,7 @@ public class GameScreen extends ScreenAdapter {
         
         batch = new SpriteBatch();
         world = new MuscleWorld(batch);
-        serial = new Serial("/dev/ttyUSB0");
+        serial = new Serial("/dev/ttyUSB1");
         powerBarI = new PowerBar(batch,barI);
         powerBarII = new PowerBar(batch, barII);
         
@@ -58,10 +62,15 @@ public class GameScreen extends ScreenAdapter {
         
         if (world.playerI.getIsRaise()) {
         	powerI += ratio;
+        	world.playerI.setPosition += ratio;
+        	world.playerI.upSize += UPSIZE;
+        	
         }
         
         if (world.playerII.getIsRaise()){
         	powerII -= ratio;
+        	world.playerII.setPosition -= ratio;
+        	world.playerII.upSize += UPSIZE;
         }
         
         System.out.println(world.playerI.getPower());
@@ -72,10 +81,17 @@ public class GameScreen extends ScreenAdapter {
         if (timer >= 2) {
             world.playerI.deCreasePowerPerSec();
             world.playerII.deCreasePowerPerSec();
-            if (powerI > -BAR_LENGHT)
-                powerI -= ratio;
-            if (powerII < BAR_LENGHT*2)
-                powerII += ratio;
+            if (powerI > -BAR_LENGHT) {
+            	powerI -= ratio;
+            	world.playerI.setPosition -= ratio;
+            	world.playerI.upSize -= UPSIZE;
+            }
+            	
+            if (powerII < BAR_LENGHT*2) {
+            	powerII += ratio;
+            	world.playerII.setPosition += ratio;
+            	world.playerII.upSize -= UPSIZE;
+            }
             timer = 0;
 
         }
@@ -125,13 +141,20 @@ public class GameScreen extends ScreenAdapter {
             System.out.println(serial.getValue() + " | " + serial.getValue2());
             powerUp();
             
-            powerBarI.Draw(powerI);
-            powerBarII.Draw(powerII);
+            powerBarI.draw(powerI);
+            powerBarII.draw(powerII);
+            world.playerI.draw();
+            world.playerII.draw();
             decreasePowerPerSec();
             whoWin();       
         } else {
-            powerBarI.Draw(powerI);
-            powerBarII.Draw(powerII);
+            powerBarI.draw(powerI);
+            powerBarII.draw(powerII);
+            if (world.playerI.releasePower) {
+                batch.draw(playerI, WIDTH/2 - 320, 35);
+            } else if (world.playerII.releasePower) {
+            	batch.draw(playerII, WIDTH/2 - 320, 35);
+            }
         }
         batch.end();
     }

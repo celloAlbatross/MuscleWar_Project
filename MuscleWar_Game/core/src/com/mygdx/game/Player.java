@@ -1,6 +1,7 @@
 
 package com.mygdx.game;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Player {
@@ -15,17 +16,22 @@ public class Player {
     boolean isRaise;
     boolean releasePower;
     int powerBar = 0;
+    int upSize = 0;
+    
     float setPosition;
     SpriteBatch batch;
+    Texture muscle;
+    
     
     public static int DOWN_STATE = 1;
     public static int UP_STATE = 2;
 
-    public Player(SpriteBatch batch,float x) {
+    public Player(SpriteBatch batch, float position, Texture muscle) {
         
     	isRaise = false;
-    	setPosition = x;
+    	setPosition = position;
     	this.batch = batch;
+    	this.muscle = muscle;
     	
     	currentState = DOWN_STATE;
     	previousState = DOWN_STATE;
@@ -76,8 +82,8 @@ public class Player {
     }
     
     public void draw() {
-    	
+    	batch.draw(muscle, setPosition, 35, 200 + upSize, 400 + (2*upSize));
     }
-    
+  
     
 }

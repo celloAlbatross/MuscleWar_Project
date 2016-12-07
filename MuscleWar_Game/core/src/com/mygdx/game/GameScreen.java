@@ -22,6 +22,7 @@ public class GameScreen extends ScreenAdapter {
     MuscleWorld world;
     PowerBar powerBarI;
     PowerBar powerBarII;
+    Serial serial;
     
     
     SpriteBatch batch;
@@ -34,11 +35,17 @@ public class GameScreen extends ScreenAdapter {
     float powerII = BAR_LENGHT*2;
 
 
-    public GameScreen(MuscleWarGame muscleWarGame) {
+    public GameScreen(MuscleWarGame muscleWarGame) throws Exception {
         world = new MuscleWorld();
         batch = new SpriteBatch();
+        serial = new Serial("/dev/ttyUSB0");
         powerBarI = new PowerBar(batch,barI);
         powerBarII = new PowerBar(batch, barII);
+        
+        Thread t = new Thread(serial);
+        t.setDaemon(true);
+        t.start();
+        
         maxPower = world.playerI.getMaxPower();
         ratio = BAR_LENGHT/maxPower;
     }
@@ -104,6 +111,10 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        System.out.println(serial.getValue());
+        System.out.println(serial.getValue2());
+        System.out.println("-----------");
+        
         batch.begin();
         batch.draw(backG, 0, 0);
         if (!releasePower()) {  

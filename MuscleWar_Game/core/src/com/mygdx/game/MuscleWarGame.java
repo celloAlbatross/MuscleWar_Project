@@ -14,7 +14,12 @@ public class MuscleWarGame extends Game {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-                setScreen(new GameScreen(this));
+                try {
+					setScreen(new GameScreen(this));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		
 	}
 

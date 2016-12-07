@@ -10,6 +10,7 @@ import gnu.io.SerialPort;
 public class Serial {
 	private String dev;
 	private double value;
+	private double value2;
 
 	public Serial(String dev) throws Exception {
 
@@ -42,14 +43,22 @@ public class Serial {
 
                 String line = reader.readLine();
                 value = Double.parseDouble(line.split(" ")[1]);
+                value2 = Double.parseDouble(line.split(" ")[2]);
                 System.out.println(value);
+                System.out.println(value2);
+                System.out.println("-------------");
             }
             
             commPort.close();
         }
     }
 
-	public double getValue() {
-		return value;
+	public boolean getValue() {
+		
+		if(value > 0) {
+			return true;
+		}
+		
+		return false;
 	}
 }

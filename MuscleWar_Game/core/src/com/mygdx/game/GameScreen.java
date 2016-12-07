@@ -96,7 +96,7 @@ public class GameScreen extends ScreenAdapter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        System.out.println(serial.getValue());
+        
         powerBar.Draw(power);
         
         batch.end();

@@ -13,6 +13,7 @@ public class Serial implements Runnable {
 	private String dev;
 	private double value;
 	private double value2;
+	private CommPort commPort;
 
 	public Serial(String dev) throws Exception {
 
@@ -31,7 +32,7 @@ public class Serial implements Runnable {
         else
         {
             int timeout = 2000;
-            CommPort commPort = portIdentifier.open("serial",timeout);
+            commPort = portIdentifier.open("serial",timeout);
 
             if (commPort instanceof SerialPort)
             {
@@ -61,6 +62,10 @@ public class Serial implements Runnable {
     
     public double getValue2() {
     	return value2;
+    }
+    
+    public CommPort getPort() {
+    	return commPort;
     }
 
     @Override

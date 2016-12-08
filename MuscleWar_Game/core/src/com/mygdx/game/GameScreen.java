@@ -8,6 +8,9 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import gnu.io.CommPort;
+
 import java.awt.RenderingHints;
 
 public class GameScreen extends ScreenAdapter {
@@ -21,14 +24,17 @@ public class GameScreen extends ScreenAdapter {
     float maxPower;
     float ratio;
     
-    MuscleWorld world;
-    PowerBar powerBarI;
-    PowerBar powerBarII;
-    Serial serial;
+    private MuscleWorld world;
+    private PowerBar powerBarI;
+    private PowerBar powerBarII;
+    private Serial serial;
+    private SpriteBatch batch;
+    private double endPower1;
+    private double endPower2;
     
+    private int state;
+    private boolean resetGame;
     
-    
-    SpriteBatch batch;
     Texture backG = new Texture("gym.jpg");
     Texture barI = new Texture("red.png");
     Texture barII = new Texture("blue.jpg");
@@ -39,14 +45,19 @@ public class GameScreen extends ScreenAdapter {
     float powerI = -BAR_LENGHT;
     float powerII = BAR_LENGHT*2;
 
-
-    public GameScreen(MuscleWarGame muscleWarGame) throws Exception {
+    public static int GAME_RUNNING = 1;
+    public static int GAME_END = 2;
+    
+    public GameScreen(MuscleWarGame muscleWarGame, Serial serial) throws Exception {
         
         batch = new SpriteBatch();
         world = new MuscleWorld(batch);
-        serial = new Serial("/dev/ttyUSB0");
+        this.serial = serial;
         powerBarI = new PowerBar(batch,barI);
         powerBarII = new PowerBar(batch, barII);
+        
+        state = GAME_RUNNING;
+        resetGame = false;
         
         Thread t = new Thread(serial);
         t.setDaemon(true);
@@ -106,9 +117,12 @@ public class GameScreen extends ScreenAdapter {
         } else if (world.playerII.releasePower) {
             System.out.println("Player II Win !!");
         }
+        
+    	endPower1 = world.playerI.getPower();
+    	endPower2 = world.playerII.getPower();
     }
     
-    public boolean releasePower(){
+    public boolean releasePower() {
         if (world.playerI.releasePower) {
             return true;
         } else if (world.playerII.releasePower) {
@@ -117,11 +131,27 @@ public class GameScreen extends ScreenAdapter {
         return false;
     }
     
-    public void timerReset(){
+    public void restart() {
+    	if (state == GAME_END) {
+    		powerUp();
+    		
+    		System.out.println(endPower1 + " | " + endPower2);
+    		
+    		if (world.playerI.getPower() - endPower1 >= 5 && world.playerII.getPower() - endPower2 >= 5) {
+    			resetGame = true;
+    		}
+    	}
+    }
+    
+    public void timerReset() {
         if(timer >= 10000){
             timer = 0;
         }
 
+    }
+    
+    public boolean getReset() {
+    	return resetGame;
     }
     
     @Override
@@ -148,8 +178,8 @@ public class GameScreen extends ScreenAdapter {
             decreasePowerPerSec();
             whoWin();       
         } else {
-//            powerBarI.draw(powerI);
-//            powerBarII.draw(powerII);
+        	
+        	
             if (world.playerI.releasePower) {
                 batch.draw(playerI, WIDTH/2 - 320, 35);
                 powerBarI.drawWin();
@@ -157,7 +187,10 @@ public class GameScreen extends ScreenAdapter {
             	batch.draw(playerII, WIDTH/2 - 320, 35);
             	powerBarII.drawWin();
             }
+            
+            state = GAME_END;
         }
+        restart();
         batch.end();
     }
     

@@ -23,9 +23,4 @@ public class MuscleWorld {
         playerII = new Player(batch, positionPlayerII, muscleII);
     }
     
-    public void update (float delta) {
-    	
-    }
-    
-    
 }

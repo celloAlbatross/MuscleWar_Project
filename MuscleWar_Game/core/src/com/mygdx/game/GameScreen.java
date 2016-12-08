@@ -44,7 +44,7 @@ public class GameScreen extends ScreenAdapter {
         
         batch = new SpriteBatch();
         world = new MuscleWorld(batch);
-        serial = new Serial("/dev/ttyUSB1");
+        serial = new Serial("/dev/ttyUSB0");
         powerBarI = new PowerBar(batch,barI);
         powerBarII = new PowerBar(batch, barII);
         
@@ -148,12 +148,14 @@ public class GameScreen extends ScreenAdapter {
             decreasePowerPerSec();
             whoWin();       
         } else {
-            powerBarI.draw(powerI);
-            powerBarII.draw(powerII);
+//            powerBarI.draw(powerI);
+//            powerBarII.draw(powerII);
             if (world.playerI.releasePower) {
                 batch.draw(playerI, WIDTH/2 - 320, 35);
+                powerBarI.drawWin();
             } else if (world.playerII.releasePower) {
             	batch.draw(playerII, WIDTH/2 - 320, 35);
+            	powerBarII.drawWin();
             }
         }
         batch.end();

@@ -21,4 +21,8 @@ public class PowerBar {
 //        batch.draw(redBar, 20, 20);
 
     }
+    
+    public void drawWin(){
+    	batch.draw( bar, 0, 20, 1280, 30);
+    }
 }

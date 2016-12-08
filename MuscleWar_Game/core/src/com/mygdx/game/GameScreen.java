@@ -133,9 +133,13 @@ public class GameScreen extends ScreenAdapter {
     private void whoWin(){
         if (world.playerI.releasePower) {
             System.out.println("Player I Win !!");
+            bgMusic.stop();
+            win.setVolume((long)1.0f, 100000);
             win.play();
         } else if (world.playerII.releasePower) {
             System.out.println("Player II Win !!");
+            bgMusic.stop();
+            win.setVolume((long)1.0f, 100000);
             win.play();
         }
         

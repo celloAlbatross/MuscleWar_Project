@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,6 +33,10 @@ public class GameScreen extends ScreenAdapter {
     private double endPower1;
     private double endPower2;
     
+    private float timer = 0;
+    private float powerI = -BAR_LENGHT;
+    private float powerII = BAR_LENGHT*2;
+    
     private int state;
     private boolean resetGame;
     
@@ -40,10 +45,12 @@ public class GameScreen extends ScreenAdapter {
     Texture barII = new Texture("blue.jpg");
     Texture playerI = new Texture("player1win.png");
     Texture playerII = new Texture("player2win.png");
- 
-    float timer = 0;
-    float powerI = -BAR_LENGHT;
-    float powerII = BAR_LENGHT*2;
+    
+    Sound bgMusic;
+    Sound soundPlayerI;
+    Sound soundPlayerII;
+    Sound win;
+
 
     public static int GAME_RUNNING = 1;
     public static int GAME_END = 2;
@@ -55,6 +62,12 @@ public class GameScreen extends ScreenAdapter {
         this.serial = serial;
         powerBarI = new PowerBar(batch,barI);
         powerBarII = new PowerBar(batch, barII);
+        bgMusic = Gdx.audio.newSound(Gdx.files.internal("bg.mp3"));
+        soundPlayerI = Gdx.audio.newSound(Gdx.files.internal("voice.mp3"));
+        soundPlayerII = Gdx.audio.newSound(Gdx.files.internal("voice2.mp3"));
+        win = Gdx.audio.newSound(Gdx.files.internal("win.mp3"));
+        bgMusic.setVolume((long)1.0f, 500);
+        bgMusic.play();
         
         state = GAME_RUNNING;
         resetGame = false;
@@ -75,6 +88,9 @@ public class GameScreen extends ScreenAdapter {
         	powerI += ratio;
         	world.playerI.setPosition += ratio;
         	world.playerI.upSize += UPSIZE;
+        	if(!releasePower()) {
+        		soundPlayerI.play();
+        	}
         	
         }
         
@@ -82,6 +98,9 @@ public class GameScreen extends ScreenAdapter {
         	powerII -= ratio;
         	world.playerII.setPosition -= ratio;
         	world.playerII.upSize += UPSIZE;
+        	if(!releasePower()) {
+        		soundPlayerII.play();
+        	}
         }
         
         System.out.println(world.playerI.getPower());
@@ -114,8 +133,10 @@ public class GameScreen extends ScreenAdapter {
     private void whoWin(){
         if (world.playerI.releasePower) {
             System.out.println("Player I Win !!");
+            win.play();
         } else if (world.playerII.releasePower) {
             System.out.println("Player II Win !!");
+            win.play();
         }
         
     	endPower1 = world.playerI.getPower();
@@ -159,10 +180,6 @@ public class GameScreen extends ScreenAdapter {
         
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        //System.out.println(serial.getValue());
-        //System.out.println(serial.getValue2());
-        
         
         batch.begin();
         batch.draw(backG, 0, 0);
@@ -178,7 +195,6 @@ public class GameScreen extends ScreenAdapter {
             decreasePowerPerSec();
             whoWin();       
         } else {
-        	
         	
             if (world.playerI.releasePower) {
                 batch.draw(playerI, WIDTH/2 - 320, 35);

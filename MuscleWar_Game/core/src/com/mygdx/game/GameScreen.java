@@ -39,6 +39,7 @@ public class GameScreen extends ScreenAdapter {
     
     private int state;
     private boolean resetGame;
+    private int winner;
     
     Texture backG = new Texture("gym.jpg");
     Texture barI = new Texture("red.png");
@@ -55,6 +56,10 @@ public class GameScreen extends ScreenAdapter {
     public static int GAME_RUNNING = 1;
     public static int GAME_END = 2;
     
+    public static int noWin = 0;
+    public static int player1Win = 1;
+    public static int player2Win = 2;
+    
     public GameScreen(MuscleWarGame muscleWarGame, Serial serial) throws Exception {
         
         batch = new SpriteBatch();
@@ -62,6 +67,7 @@ public class GameScreen extends ScreenAdapter {
         this.serial = serial;
         powerBarI = new PowerBar(batch,barI);
         powerBarII = new PowerBar(batch, barII);
+        
         bgMusic = Gdx.audio.newSound(Gdx.files.internal("bg.mp3"));
         soundPlayerI = Gdx.audio.newSound(Gdx.files.internal("voice.mp3"));
         soundPlayerII = Gdx.audio.newSound(Gdx.files.internal("voice2.mp3"));
@@ -69,6 +75,7 @@ public class GameScreen extends ScreenAdapter {
         bgMusic.setVolume((long)1.0f, 500);
         bgMusic.play();
         
+        winner = noWin;
         state = GAME_RUNNING;
         resetGame = false;
         
@@ -148,9 +155,11 @@ public class GameScreen extends ScreenAdapter {
     }
     
     public boolean releasePower() {
-        if (world.playerI.releasePower) {
+        if (world.playerI.releasePower && winner != player2Win) {
+        	winner = player1Win;
             return true;
-        } else if (world.playerII.releasePower) {
+        } else if (world.playerII.releasePower && winner != player1Win) {
+        	winner = player2Win;
             return true;
         }
         return false;
@@ -200,14 +209,14 @@ public class GameScreen extends ScreenAdapter {
             whoWin();       
         } else {
         	
-            if (world.playerI.releasePower) {
+            if (winner == player1Win) {
                 batch.draw(playerI, WIDTH/2 - 320, 35);
                 powerBarI.drawWin();
-            } else if (world.playerII.releasePower) {
+            } else if (winner == player2Win) {
             	batch.draw(playerII, WIDTH/2 - 320, 35);
             	powerBarII.drawWin();
             }
-            
+            System.out.println(winner);
             state = GAME_END;
         }
         restart();
